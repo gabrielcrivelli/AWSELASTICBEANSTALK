@@ -1,0 +1,9 @@
+FROM mcr.microsoft.com/playwright/python:v1.40.0-focal
+WORKDIR /app
+COPY requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt
+RUN playwright install chromium
+COPY app/scrapers ./app/scrapers
+COPY app/workers ./app/workers
+ENV PYTHONUNBUFFERED=1
+CMD ["celery", "-A", "app.workers.celery_app", "worker", "--loglevel=warning", "--concurrency=1"]

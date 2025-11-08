@@ -1,11 +1,9 @@
 {
-  "AWSEBDockerrunVersion": 2,
-  "containerDefinitions": [{
-    "name": "web",
-    "image": "retail-bi-scraper:latest",
-    "essential": true,
-    "memory": 512,
-    "portMappings": [{"hostPort": 8000, "containerPort": 8000}],
-    "environment": [{"name": "ENVIRONMENT", "value": "production"}]
-  }]
+  "AWSEBDockerrunVersion": "1",
+  "Ports": [
+    {
+      "ContainerPort": 8000,
+      "HostPort": 8000
+    }
+  ]
 }

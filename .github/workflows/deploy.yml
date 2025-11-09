@@ -1,0 +1,35 @@
+name: Deploy to AWS Elastic Beanstalk
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Create ZIP for deployment
+        run: zip -r deploy.zip . -x '*.git*' '*.github*' '*__pycache__*' '*.pytest_cache*'
+
+      - name: Deploy to AWS Elastic Beanstalk
+        uses: einaregilsson/beanstalk-deploy@v21
+        with:
+          aws_access_key: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws_secret_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          application_name: retail-bi-scraper
+          environment_name: retail-bi-free
+          version_label: ${{ github.sha }}
+          region: us-east-1
+          deployment_package: deploy.zip
